@@ -1,20 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { BottomNavigation, MD2LightTheme, PaperProvider } from 'react-native-paper';
+import { useState } from 'react';
+import { WorkoutForm } from './components/Workoutform';
+import { WorkoutList } from './components/Workoutlist';
+import { WorkoutContext } from './components/Workoutcontext';
+
+const routes = [
+  {key: 'addworkout', title: 'Add Workout', focusedIcon: 'clipboard-plus-outline' },
+  {key: 'workoutlist', title: 'Workout list', focusedIcon: 'clipboard-list-outline' }
+]
+
 
 export default function App() {
+  
+  const [workout, setWorkout] = useState([])
+  const [index, setIndex] = useState(0)
+
+
+  const renderScene = BottomNavigation.SceneMap({
+    addworkout: WorkoutForm,
+    workoutlist: WorkoutList
+  })
+  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    
+    <PaperProvider theme={MD2LightTheme}>
+      <WorkoutContext.Provider value={{workout, setWorkout}}>
+      <BottomNavigation
+        navigationState={{index, routes}}
+        onIndexChange={setIndex}
+        renderScene={renderScene}
+      />
+      </WorkoutContext.Provider>
+    </PaperProvider>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
